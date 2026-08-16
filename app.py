@@ -514,6 +514,12 @@ def delete_message(message_id):
     return redirect(url_for("view_messages"))
 
 
-if __name__ == "__main__":
+# Ensure default admin works under Gunicorn/WSGI production server
+try:
     ensure_default_admin()
+except Exception as _e:
+    print("Could not auto-verify default admin on startup:", _e)
+
+
+if __name__ == "__main__":
     app.run(debug=True)
