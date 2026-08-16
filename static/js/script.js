@@ -29,9 +29,9 @@ document.addEventListener("DOMContentLoaded", function () {
         }, 5000);
     });
 
-    // ---------- Scroll reveal animation ----------
+    // ---------- Scroll reveal animation (desktop only to prevent mobile blank screens) ----------
     const revealItems = document.querySelectorAll(".card, .course-card, .testimonial-card, .tutor-card");
-    if ("IntersectionObserver" in window) {
+    if ("IntersectionObserver" in window && window.innerWidth > 768) {
         const observer = new IntersectionObserver(function (entries) {
             entries.forEach(function (entry) {
                 if (entry.isIntersecting) {
@@ -40,13 +40,18 @@ document.addEventListener("DOMContentLoaded", function () {
                     observer.unobserve(entry.target);
                 }
             });
-        }, { threshold: 0.1 });
+        }, { threshold: 0.05 });
 
         revealItems.forEach(function (item) {
             item.style.opacity = "0";
             item.style.transform = "translateY(24px)";
             item.style.transition = "opacity 0.6s ease, transform 0.6s ease";
             observer.observe(item);
+        });
+    } else {
+        revealItems.forEach(function (item) {
+            item.style.opacity = "1";
+            item.style.transform = "none";
         });
     }
 
