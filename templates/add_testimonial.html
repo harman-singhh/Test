@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Add Testimonial | CodeCraft Academy</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+</head>
+<body class="dashboard-body">
+
+<div class="dash-wrapper">
+    <aside class="sidebar" id="sidebar">
+        <a href="{{ url_for('index') }}" class="logo">Code<span>Craft</span></a>
+        <div class="sidebar-section-title">Overview</div>
+        <a href="{{ url_for('dashboard') }}" class="sidebar-link"><span class="icon">📊</span> Dashboard</a>
+        <div class="sidebar-section-title">Courses</div>
+        <a href="{{ url_for('add_course') }}" class="sidebar-link"><span class="icon">➕</span> Add Course</a>
+        <a href="{{ url_for('courses') }}" class="sidebar-link" target="_blank"><span class="icon">📚</span> View Courses (live)</a>
+        <div class="sidebar-section-title">Tutors</div>
+        <a href="{{ url_for('add_tutor') }}" class="sidebar-link"><span class="icon">➕</span> Add Tutor</a>
+        <a href="{{ url_for('view_tutors') }}" class="sidebar-link"><span class="icon">🧑‍🏫</span> View Tutors</a>
+        <div class="sidebar-section-title">Engagement</div>
+        <a href="{{ url_for('add_testimonial') }}" class="sidebar-link active"><span class="icon">➕</span> Add Testimonial</a>
+        <a href="{{ url_for('view_bookings') }}" class="sidebar-link"><span class="icon">🗓️</span> Session Bookings</a>
+        <a href="{{ url_for('view_messages') }}" class="sidebar-link"><span class="icon">✉️</span> Contact Messages</a>
+        <div class="sidebar-logout">
+            <a href="{{ url_for('logout') }}" class="sidebar-link"><span class="icon">🚪</span> Logout</a>
+        </div>
+    </aside>
+
+    <main class="dash-main">
+        <div class="dash-topbar">
+            <div>
+                <h1>Add Testimonial</h1>
+                <p>Feature a student success story on the homepage.</p>
+            </div>
+        </div>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            {% for category, msg in messages %}
+              <div class="alert alert-{{ 'success' if category == 'success' else 'error' }}">{{ msg }}</div>
+            {% endfor %}
+          {% endif %}
+        {% endwith %}
+
+        <div class="dash-panel">
+            <form method="POST" action="{{ url_for('add_testimonial') }}" enctype="multipart/form-data" data-validate="true">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="student_name">Student Name *</label>
+                        <input type="text" id="student_name" name="student_name" placeholder="Amina R." required>
+                    </div>
+                    <div class="form-group">
+                        <label for="course_taken">Course Taken</label>
+                        <input type="text" id="course_taken" name="course_taken" placeholder="Python for Beginners">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="rating">Rating (1-5)</label>
+                    <input type="range" min="1" max="5" value="5" id="rating" name="rating" class="rating-input">
+                    <div id="ratingLabel" style="margin-top:6px; color:#f59e0b; font-size:1.2rem;">★★★★★</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="message">Testimonial Message *</label>
+                    <textarea id="message" name="message" placeholder="What did the student say about their experience?" required></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="photo">Student Photo</label>
+                    <input type="file" id="photo" name="photo" accept=".png,.jpg,.jpeg" data-preview="photoPreview">
+                    <div class="image-preview" id="photoPreview"></div>
+                </div>
+
+                <button type="submit" class="btn btn-primary">Add Testimonial</button>
+            </form>
+        </div>
+    </main>
+</div>
+
+<script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+</body>
+</html>

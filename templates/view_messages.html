@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Contact Messages | CodeCraft Academy</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+</head>
+<body class="dashboard-body">
+
+<div class="dash-wrapper">
+    <aside class="sidebar" id="sidebar">
+        <a href="{{ url_for('index') }}" class="logo">Code<span>Craft</span></a>
+        <div class="sidebar-section-title">Overview</div>
+        <a href="{{ url_for('dashboard') }}" class="sidebar-link"><span class="icon">📊</span> Dashboard</a>
+        <div class="sidebar-section-title">Courses</div>
+        <a href="{{ url_for('add_course') }}" class="sidebar-link"><span class="icon">➕</span> Add Course</a>
+        <a href="{{ url_for('courses') }}" class="sidebar-link" target="_blank"><span class="icon">📚</span> View Courses (live)</a>
+        <div class="sidebar-section-title">Tutors</div>
+        <a href="{{ url_for('add_tutor') }}" class="sidebar-link"><span class="icon">➕</span> Add Tutor</a>
+        <a href="{{ url_for('view_tutors') }}" class="sidebar-link"><span class="icon">🧑‍🏫</span> View Tutors</a>
+        <div class="sidebar-section-title">Engagement</div>
+        <a href="{{ url_for('add_testimonial') }}" class="sidebar-link"><span class="icon">➕</span> Add Testimonial</a>
+        <a href="{{ url_for('view_bookings') }}" class="sidebar-link"><span class="icon">🗓️</span> Session Bookings</a>
+        <a href="{{ url_for('view_messages') }}" class="sidebar-link active"><span class="icon">✉️</span> Contact Messages</a>
+        <div class="sidebar-logout">
+            <a href="{{ url_for('logout') }}" class="sidebar-link"><span class="icon">🚪</span> Logout</a>
+        </div>
+    </aside>
+
+    <main class="dash-main">
+        <div class="dash-topbar">
+            <div>
+                <h1>Contact Messages</h1>
+                <p>Messages submitted through the public Contact page.</p>
+            </div>
+        </div>
+
+        {% with messages_flash = get_flashed_messages(with_categories=true) %}
+          {% if messages_flash %}
+            {% for category, msg in messages_flash %}
+              <div class="alert alert-{{ 'success' if category == 'success' else 'error' }}">{{ msg }}</div>
+            {% endfor %}
+          {% endif %}
+        {% endwith %}
+
+        <div class="dash-panel">
+            <table class="dash-table">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Contact</th>
+                        <th>Subject</th>
+                        <th>Message</th>
+                        <th>Received</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if messages and messages|length > 0 %}
+                        {% for m in messages %}
+                        <tr>
+                            <td>{{ m.name }}</td>
+                            <td>{{ m.email }}{% if m.phone %}<br><small>{{ m.phone }}</small>{% endif %}</td>
+                            <td>{{ m.subject or '-' }}</td>
+                            <td style="white-space:normal; max-width:280px;">{{ m.message }}</td>
+                            <td>{{ m.created_at.strftime('%b %d, %Y') if m.created_at else '-' }}</td>
+                            <td>
+                                <a href="{{ url_for('delete_message', message_id=m.id) }}" class="icon-btn danger confirm-delete" data-label="this message">🗑</a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    {% else %}
+                        <tr class="empty-row"><td colspan="6">No contact messages yet.</td></tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+    </main>
+</div>
+
+<script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+</body>
+</html>

@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Session Bookings | CodeCraft Academy</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+</head>
+<body class="dashboard-body">
+
+<div class="dash-wrapper">
+    <aside class="sidebar" id="sidebar">
+        <a href="{{ url_for('index') }}" class="logo">Code<span>Craft</span></a>
+        <div class="sidebar-section-title">Overview</div>
+        <a href="{{ url_for('dashboard') }}" class="sidebar-link"><span class="icon">📊</span> Dashboard</a>
+        <div class="sidebar-section-title">Courses</div>
+        <a href="{{ url_for('add_course') }}" class="sidebar-link"><span class="icon">➕</span> Add Course</a>
+        <a href="{{ url_for('courses') }}" class="sidebar-link" target="_blank"><span class="icon">📚</span> View Courses (live)</a>
+        <div class="sidebar-section-title">Tutors</div>
+        <a href="{{ url_for('add_tutor') }}" class="sidebar-link"><span class="icon">➕</span> Add Tutor</a>
+        <a href="{{ url_for('view_tutors') }}" class="sidebar-link"><span class="icon">🧑‍🏫</span> View Tutors</a>
+        <div class="sidebar-section-title">Engagement</div>
+        <a href="{{ url_for('add_testimonial') }}" class="sidebar-link"><span class="icon">➕</span> Add Testimonial</a>
+        <a href="{{ url_for('view_bookings') }}" class="sidebar-link active"><span class="icon">🗓️</span> Session Bookings</a>
+        <a href="{{ url_for('view_messages') }}" class="sidebar-link"><span class="icon">✉️</span> Contact Messages</a>
+        <div class="sidebar-logout">
+            <a href="{{ url_for('logout') }}" class="sidebar-link"><span class="icon">🚪</span> Logout</a>
+        </div>
+    </aside>
+
+    <main class="dash-main">
+        <div class="dash-topbar">
+            <div>
+                <h1>Session Bookings</h1>
+                <p>Requests submitted through the public "Book a Session" form.</p>
+            </div>
+        </div>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            {% for category, msg in messages %}
+              <div class="alert alert-{{ 'success' if category == 'success' else 'error' }}">{{ msg }}</div>
+            {% endfor %}
+          {% endif %}
+        {% endwith %}
+
+        <div class="dash-panel">
+            <table class="dash-table">
+                <thead>
+                    <tr>
+                        <th>Student</th>
+                        <th>Contact</th>
+                        <th>Course</th>
+                        <th>Preferred Date</th>
+                        <th>Time</th>
+                        <th>Requested</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if bookings and bookings|length > 0 %}
+                        {% for b in bookings %}
+                        <tr>
+                            <td>{{ b.student_name }}</td>
+                            <td>{{ b.email }}{% if b.phone %}<br><small>{{ b.phone }}</small>{% endif %}</td>
+                            <td>{{ b.course_title or 'Not specified' }}</td>
+                            <td>{{ b.preferred_date.strftime('%b %d, %Y') if b.preferred_date else '-' }}</td>
+                            <td>{{ b.preferred_time or '-' }}</td>
+                            <td>{{ b.created_at.strftime('%b %d, %Y') if b.created_at else '-' }}</td>
+                            <td>
+                                <form method="POST" action="{{ url_for('update_booking', booking_id=b.id) }}">
+                                    <select name="status" class="status-select">
+                                        {% for s in ['Pending','Confirmed','Completed','Cancelled'] %}
+                                        <option value="{{ s }}" {% if b.status == s %}selected{% endif %}>{{ s }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </form>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    {% else %}
+                        <tr class="empty-row"><td colspan="7">No session bookings yet.</td></tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+    </main>
+</div>
+
+<script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+</body>
+</html>

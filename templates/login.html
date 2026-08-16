@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Login | CodeCraft Academy</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">
+</head>
+<body>
+
+<div class="login-wrapper">
+    <div class="login-box">
+        <div class="login-logo">Code<span style="color:#f59e0b;">Craft</span> Academy</div>
+        <h2>Admin Login</h2>
+        <p class="subtitle">Sign in to manage courses, tutors, and bookings.</p>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            {% for category, msg in messages %}
+              <div class="alert alert-{{ 'success' if category == 'success' else 'error' }}">{{ msg }}</div>
+            {% endfor %}
+          {% endif %}
+        {% endwith %}
+
+        <form id="loginForm" method="POST" action="{{ url_for('api_login') }}" novalidate>
+            <div class="form-group">
+                <label for="email">Email Address</label>
+                <input type="email" id="email" name="email" placeholder="admin@gmail.com" required>
+                <span class="error-text" id="emailError">Please enter a valid email address.</span>
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" placeholder="••••••••" required>
+                <span class="error-text" id="passwordError">Password must be at least 4 characters.</span>
+            </div>
+            <button type="submit" class="btn btn-primary">Login</button>
+        </form>
+
+        <div class="login-hint">Default admin: <strong>admin@gmail.com</strong> / <strong>admin123</strong></div>
+    </div>
+    <a href="{{ url_for('index') }}" class="back-home">&larr; Back to Home</a>
+</div>
+
+<script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>

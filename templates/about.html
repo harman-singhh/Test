@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>About Us | CodeCraft Academy</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+<nav class="navbar">
+    <div class="nav-container">
+        <a href="{{ url_for('index') }}" class="logo">Code<span>Craft</span> Academy</a>
+        <ul class="nav-links" id="navLinks">
+            <li><a href="{{ url_for('index') }}">Home</a></li>
+            <li><a href="{{ url_for('about') }}">About</a></li>
+            <li><a href="{{ url_for('courses') }}">Courses</a></li>
+            <li><a href="{{ url_for('contact') }}">Contact</a></li>
+            {% if session.get('admin_id') %}
+            <li><a href="{{ url_for('dashboard') }}">Dashboard</a></li>
+            {% else %}
+            <li><a href="{{ url_for('login') }}">Login</a></li>
+            {% endif %}
+            <li><a href="{{ url_for('book') }}" class="nav-cta">Book a Session</a></li>
+        </ul>
+        <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">
+            <span></span><span></span><span></span>
+        </button>
+    </div>
+</nav>
+
+<header class="hero" style="padding: 70px 0;">
+    <div class="container" style="text-align:center;">
+        <h1>About CodeCraft Academy</h1>
+        <p style="max-width:600px; margin: 14px auto 0; opacity:0.92;">A focused tutoring hub built exclusively for programming, web development, and tech-skills education.</p>
+    </div>
+</header>
+
+<section class="section">
+    <div class="container mission-vision">
+        <div class="card">
+            <div class="card-icon">🎯</div>
+            <h3>Our Mission</h3>
+            <p>To make high-quality, personalized programming education accessible to every student, regardless of background, by pairing them with real industry tutors in a focused, niche learning environment.</p>
+        </div>
+        <div class="card">
+            <div class="card-icon">🔭</div>
+            <h3>Our Vision</h3>
+            <p>To become the go-to platform for aspiring developers seeking mentorship, practical skills, and confidence to build real software and launch tech careers.</p>
+        </div>
+    </div>
+</section>
+
+<section class="section section-light">
+    <div class="container">
+        <div class="section-header">
+            <span class="section-tag">Our Advantage</span>
+            <h2>Why Choose CodeCraft Academy</h2>
+            <p>We're not a general tutoring marketplace — we specialize purely in code.</p>
+        </div>
+        <div class="why-choose">
+            <div class="card">
+                <div class="card-icon">🧑‍🏫</div>
+                <h3>Niche Expertise</h3>
+                <p>Every tutor specializes in software development, not general subjects.</p>
+            </div>
+            <div class="card">
+                <div class="card-icon">🛠️</div>
+                <h3>Hands-On Projects</h3>
+                <p>Learn by building, not just watching lectures.</p>
+            </div>
+            <div class="card">
+                <div class="card-icon">📅</div>
+                <h3>Easy Booking</h3>
+                <p>Reserve a session online in under a minute.</p>
+            </div>
+            <div class="card">
+                <div class="card-icon">💬</div>
+                <h3>Ongoing Support</h3>
+                <p>Message tutors and track your learning progress with ease.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+        <div class="section-header">
+            <span class="section-tag">Meet the Team</span>
+            <h2>Our Tutors</h2>
+            <p>Industry professionals dedicated to helping you grow as a developer.</p>
+        </div>
+        <div class="grid-3">
+            {% if tutors and tutors|length > 0 %}
+                {% for tutor in tutors %}
+                <div class="card tutor-card">
+                    <div class="tutor-photo">
+                        {% if tutor.photo %}
+                            <img src="{{ url_for('static', filename='images/' ~ tutor.photo) }}" alt="{{ tutor.name }}">
+                        {% else %}
+                            {{ tutor.name[0]|upper }}
+                        {% endif %}
+                    </div>
+                    <h3>{{ tutor.name }}</h3>
+                    <div class="expertise">{{ tutor.expertise }}</div>
+                    <p>{{ tutor.bio or (tutor.experience_years ~ ' years of experience') }}</p>
+                </div>
+                {% endfor %}
+            {% else %}
+                <div class="no-data">No tutors available yet.</div>
+            {% endif %}
+        </div>
+    </div>
+</section>
+
+<footer>
+    <div class="container footer-grid">
+        <div>
+            <span class="footer-logo">Code<span style="color:#f59e0b;">Craft</span> Academy</span>
+            <p>A niche tutoring platform dedicated to programming, web development, data science, and tech-skills mentorship.</p>
+        </div>
+        <div>
+            <h4>Quick Links</h4>
+            <ul>
+                <li><a href="{{ url_for('index') }}">Home</a></li>
+                <li><a href="{{ url_for('about') }}">About</a></li>
+                <li><a href="{{ url_for('courses') }}">Courses</a></li>
+                <li><a href="{{ url_for('contact') }}">Contact</a></li>
+            </ul>
+        </div>
+        <div>
+            <h4>Resources</h4>
+            <ul>
+                <li><a href="{{ url_for('book') }}">Book a Session</a></li>
+                <li><a href="{{ url_for('login') }}">Admin Login</a></li>
+            </ul>
+        </div>
+        <div>
+            <h4>Contact</h4>
+            <p>support@codecraftacademy.dev</p>
+            <p>+1 (555) 012-3456</p>
+        </div>
+    </div>
+    <div class="footer-bottom">&copy; 2026 CodeCraft Academy. All rights reserved.</div>
+</footer>
+
+<script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>

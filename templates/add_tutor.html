@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Add Tutor | CodeCraft Academy</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+</head>
+<body class="dashboard-body">
+
+<div class="dash-wrapper">
+    <aside class="sidebar" id="sidebar">
+        <a href="{{ url_for('index') }}" class="logo">Code<span>Craft</span></a>
+        <div class="sidebar-section-title">Overview</div>
+        <a href="{{ url_for('dashboard') }}" class="sidebar-link"><span class="icon">📊</span> Dashboard</a>
+        <div class="sidebar-section-title">Courses</div>
+        <a href="{{ url_for('add_course') }}" class="sidebar-link"><span class="icon">➕</span> Add Course</a>
+        <a href="{{ url_for('courses') }}" class="sidebar-link" target="_blank"><span class="icon">📚</span> View Courses (live)</a>
+        <div class="sidebar-section-title">Tutors</div>
+        <a href="{{ url_for('add_tutor') }}" class="sidebar-link active"><span class="icon">➕</span> Add Tutor</a>
+        <a href="{{ url_for('view_tutors') }}" class="sidebar-link"><span class="icon">🧑‍🏫</span> View Tutors</a>
+        <div class="sidebar-section-title">Engagement</div>
+        <a href="{{ url_for('add_testimonial') }}" class="sidebar-link"><span class="icon">➕</span> Add Testimonial</a>
+        <a href="{{ url_for('view_bookings') }}" class="sidebar-link"><span class="icon">🗓️</span> Session Bookings</a>
+        <a href="{{ url_for('view_messages') }}" class="sidebar-link"><span class="icon">✉️</span> Contact Messages</a>
+        <div class="sidebar-logout">
+            <a href="{{ url_for('logout') }}" class="sidebar-link"><span class="icon">🚪</span> Logout</a>
+        </div>
+    </aside>
+
+    <main class="dash-main">
+        <div class="dash-topbar">
+            <div>
+                <h1>Add New Tutor</h1>
+                <p>Onboard a mentor to appear on the About page.</p>
+            </div>
+        </div>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            {% for category, msg in messages %}
+              <div class="alert alert-{{ 'success' if category == 'success' else 'error' }}">{{ msg }}</div>
+            {% endfor %}
+          {% endif %}
+        {% endwith %}
+
+        <div class="dash-panel">
+            <form method="POST" action="{{ url_for('add_tutor') }}" enctype="multipart/form-data" data-validate="true">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="name">Full Name *</label>
+                        <input type="text" id="name" name="name" placeholder="John Smith" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="expertise">Expertise *</label>
+                        <input type="text" id="expertise" name="expertise" placeholder="Full-Stack JavaScript" required>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="experience_years">Years of Experience</label>
+                        <input type="number" min="0" id="experience_years" name="experience_years" placeholder="5">
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" id="email" name="email" placeholder="john@example.com">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="bio">Short Bio</label>
+                    <textarea id="bio" name="bio" placeholder="Brief background and teaching style..."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="photo">Tutor Photo</label>
+                    <input type="file" id="photo" name="photo" accept=".png,.jpg,.jpeg" data-preview="photoPreview">
+                    <div class="image-preview" id="photoPreview"></div>
+                </div>
+
+                <button type="submit" class="btn btn-primary">Add Tutor</button>
+            </form>
+        </div>
+    </main>
+</div>
+
+<script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+</body>
+</html>

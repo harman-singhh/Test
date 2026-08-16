@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tutors | CodeCraft Academy</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+</head>
+<body class="dashboard-body">
+
+<div class="dash-wrapper">
+    <aside class="sidebar" id="sidebar">
+        <a href="{{ url_for('index') }}" class="logo">Code<span>Craft</span></a>
+        <div class="sidebar-section-title">Overview</div>
+        <a href="{{ url_for('dashboard') }}" class="sidebar-link"><span class="icon">📊</span> Dashboard</a>
+        <div class="sidebar-section-title">Courses</div>
+        <a href="{{ url_for('add_course') }}" class="sidebar-link"><span class="icon">➕</span> Add Course</a>
+        <a href="{{ url_for('courses') }}" class="sidebar-link" target="_blank"><span class="icon">📚</span> View Courses (live)</a>
+        <div class="sidebar-section-title">Tutors</div>
+        <a href="{{ url_for('add_tutor') }}" class="sidebar-link"><span class="icon">➕</span> Add Tutor</a>
+        <a href="{{ url_for('view_tutors') }}" class="sidebar-link active"><span class="icon">🧑‍🏫</span> View Tutors</a>
+        <div class="sidebar-section-title">Engagement</div>
+        <a href="{{ url_for('add_testimonial') }}" class="sidebar-link"><span class="icon">➕</span> Add Testimonial</a>
+        <a href="{{ url_for('view_bookings') }}" class="sidebar-link"><span class="icon">🗓️</span> Session Bookings</a>
+        <a href="{{ url_for('view_messages') }}" class="sidebar-link"><span class="icon">✉️</span> Contact Messages</a>
+        <div class="sidebar-logout">
+            <a href="{{ url_for('logout') }}" class="sidebar-link"><span class="icon">🚪</span> Logout</a>
+        </div>
+    </aside>
+
+    <main class="dash-main">
+        <div class="dash-topbar">
+            <div>
+                <h1>Tutors</h1>
+                <p>All mentors currently listed on the platform.</p>
+            </div>
+            <a href="{{ url_for('add_tutor') }}" class="btn btn-primary btn-small">+ Add Tutor</a>
+        </div>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            {% for category, msg in messages %}
+              <div class="alert alert-{{ 'success' if category == 'success' else 'error' }}">{{ msg }}</div>
+            {% endfor %}
+          {% endif %}
+        {% endwith %}
+
+        <div class="dash-panel">
+            <table class="dash-table">
+                <thead>
+                    <tr>
+                        <th>Photo</th>
+                        <th>Name</th>
+                        <th>Expertise</th>
+                        <th>Experience</th>
+                        <th>Email</th>
+                        <th>Added</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if tutors and tutors|length > 0 %}
+                        {% for tutor in tutors %}
+                        <tr>
+                            <td>
+                                {% if tutor.photo %}
+                                <img class="thumb" src="{{ url_for('static', filename='images/' ~ tutor.photo) }}" alt="{{ tutor.name }}">
+                                {% else %}
+                                <div class="thumb"></div>
+                                {% endif %}
+                            </td>
+                            <td>{{ tutor.name }}</td>
+                            <td>{{ tutor.expertise }}</td>
+                            <td>{{ tutor.experience_years }} yrs</td>
+                            <td>{{ tutor.email or '-' }}</td>
+                            <td>{{ tutor.created_at.strftime('%b %d, %Y') if tutor.created_at else '-' }}</td>
+                            <td>
+                                <a href="{{ url_for('delete_tutor', tutor_id=tutor.id) }}" class="icon-btn danger confirm-delete" data-label="{{ tutor.name }}">🗑</a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    {% else %}
+                        <tr class="empty-row"><td colspan="7">No tutors available.</td></tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+    </main>
+</div>
+
+<script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+</body>
+</html>

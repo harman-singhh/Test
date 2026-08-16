@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Edit Course | CodeCraft Academy</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+</head>
+<body class="dashboard-body">
+
+<div class="dash-wrapper">
+    <aside class="sidebar" id="sidebar">
+        <a href="{{ url_for('index') }}" class="logo">Code<span>Craft</span></a>
+        <div class="sidebar-section-title">Overview</div>
+        <a href="{{ url_for('dashboard') }}" class="sidebar-link"><span class="icon">📊</span> Dashboard</a>
+        <div class="sidebar-section-title">Courses</div>
+        <a href="{{ url_for('add_course') }}" class="sidebar-link"><span class="icon">➕</span> Add Course</a>
+        <a href="{{ url_for('courses') }}" class="sidebar-link" target="_blank"><span class="icon">📚</span> View Courses (live)</a>
+        <div class="sidebar-section-title">Tutors</div>
+        <a href="{{ url_for('add_tutor') }}" class="sidebar-link"><span class="icon">➕</span> Add Tutor</a>
+        <a href="{{ url_for('view_tutors') }}" class="sidebar-link"><span class="icon">🧑‍🏫</span> View Tutors</a>
+        <div class="sidebar-section-title">Engagement</div>
+        <a href="{{ url_for('add_testimonial') }}" class="sidebar-link"><span class="icon">➕</span> Add Testimonial</a>
+        <a href="{{ url_for('view_bookings') }}" class="sidebar-link"><span class="icon">🗓️</span> Session Bookings</a>
+        <a href="{{ url_for('view_messages') }}" class="sidebar-link"><span class="icon">✉️</span> Contact Messages</a>
+        <div class="sidebar-logout">
+            <a href="{{ url_for('logout') }}" class="sidebar-link"><span class="icon">🚪</span> Logout</a>
+        </div>
+    </aside>
+
+    <main class="dash-main">
+        <div class="dash-topbar">
+            <div>
+                <h1>Edit Course</h1>
+                <p>Update details for "{{ course.title }}"</p>
+            </div>
+        </div>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            {% for category, msg in messages %}
+              <div class="alert alert-{{ 'success' if category == 'success' else 'error' }}">{{ msg }}</div>
+            {% endfor %}
+          {% endif %}
+        {% endwith %}
+
+        <div class="dash-panel">
+            <form method="POST" action="{{ url_for('edit_course', course_id=course.id) }}" enctype="multipart/form-data" data-validate="true">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="title">Course Title *</label>
+                        <input type="text" id="title" name="title" value="{{ course.title }}" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="category">Category *</label>
+                        <select id="category" name="category" required>
+                            {% for cat in ['Web Development','Python','Data Science','Mobile Development','AI & Machine Learning','DevOps','Computer Science Basics'] %}
+                            <option value="{{ cat }}" {% if course.category == cat %}selected{% endif %}>{{ cat }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="description">Description *</label>
+                    <textarea id="description" name="description" required>{{ course.description }}</textarea>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="duration">Duration</label>
+                        <input type="text" id="duration" name="duration" value="{{ course.duration or '' }}">
+                    </div>
+                    <div class="form-group">
+                        <label for="price">Price (USD)</label>
+                        <input type="number" step="0.01" min="0" id="price" name="price" value="{{ course.price or 0 }}">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="syllabus_link">Syllabus Link</label>
+                        <input type="url" id="syllabus_link" name="syllabus_link" value="{{ course.syllabus_link or '' }}">
+                    </div>
+                    <div class="form-group">
+                        <label for="demo_link">Live Demo Link</label>
+                        <input type="url" id="demo_link" name="demo_link" value="{{ course.demo_link or '' }}">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="image">Course Image {% if course.image %}(current image will be kept unless replaced){% endif %}</label>
+                    {% if course.image %}
+                    <div class="image-preview" style="display:flex;">
+                        <img src="{{ url_for('static', filename='images/' ~ course.image) }}" alt="{{ course.title }}">
+                    </div>
+                    {% endif %}
+                    <input type="file" id="image" name="image" accept=".png,.jpg,.jpeg" data-preview="imagePreview">
+                    <div class="image-preview" id="imagePreview"></div>
+                </div>
+
+                <button type="submit" class="btn btn-primary">Update Course</button>
+            </form>
+        </div>
+    </main>
+</div>
+
+<script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+</body>
+</html>

@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard | CodeCraft Academy</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+</head>
+<body class="dashboard-body">
+
+<div class="dash-wrapper">
+    <aside class="sidebar" id="sidebar">
+        <a href="{{ url_for('index') }}" class="logo">Code<span>Craft</span></a>
+
+        <div class="sidebar-section-title">Overview</div>
+        <a href="{{ url_for('dashboard') }}" class="sidebar-link active"><span class="icon">📊</span> Dashboard</a>
+
+        <div class="sidebar-section-title">Courses</div>
+        <a href="{{ url_for('add_course') }}" class="sidebar-link"><span class="icon">➕</span> Add Course</a>
+        <a href="{{ url_for('courses') }}" class="sidebar-link" target="_blank"><span class="icon">📚</span> View Courses (live)</a>
+
+        <div class="sidebar-section-title">Tutors</div>
+        <a href="{{ url_for('add_tutor') }}" class="sidebar-link"><span class="icon">➕</span> Add Tutor</a>
+        <a href="{{ url_for('view_tutors') }}" class="sidebar-link"><span class="icon">🧑‍🏫</span> View Tutors</a>
+
+        <div class="sidebar-section-title">Engagement</div>
+        <a href="{{ url_for('add_testimonial') }}" class="sidebar-link"><span class="icon">➕</span> Add Testimonial</a>
+        <a href="{{ url_for('view_bookings') }}" class="sidebar-link"><span class="icon">🗓️</span> Session Bookings</a>
+        <a href="{{ url_for('view_messages') }}" class="sidebar-link"><span class="icon">✉️</span> Contact Messages</a>
+
+        <div class="sidebar-logout">
+            <a href="{{ url_for('logout') }}" class="sidebar-link"><span class="icon">🚪</span> Logout</a>
+        </div>
+    </aside>
+
+    <main class="dash-main">
+        <div class="dash-topbar">
+            <button class="nav-toggle" id="sidebarToggle" style="display:none;" aria-label="Toggle sidebar">
+                <span></span><span></span><span></span>
+            </button>
+            <div>
+                <h1>Welcome back, {{ session.get('admin_name', 'Admin') }} 👋</h1>
+                <p>Here's what's happening at CodeCraft Academy today.</p>
+            </div>
+            <div class="admin-chip">
+                <div class="avatar">{{ session.get('admin_name', 'A')[0]|upper }}</div>
+                {{ session.get('admin_name', 'Admin') }}
+            </div>
+        </div>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            {% for category, msg in messages %}
+              <div class="alert alert-{{ 'success' if category == 'success' else 'error' }}">{{ msg }}</div>
+            {% endfor %}
+          {% endif %}
+        {% endwith %}
+
+        <div class="dash-stats">
+            <div class="dash-stat-card blue">
+                <div class="icon">📚</div>
+                <h3>{{ total_courses }}</h3>
+                <p>Total Courses</p>
+            </div>
+            <div class="dash-stat-card cyan">
+                <div class="icon">🧑‍🏫</div>
+                <h3>{{ total_tutors }}</h3>
+                <p>Total Tutors</p>
+            </div>
+            <div class="dash-stat-card amber">
+                <div class="icon">⭐</div>
+                <h3>{{ total_testimonials }}</h3>
+                <p>Testimonials</p>
+            </div>
+            <div class="dash-stat-card green">
+                <div class="icon">🗓️</div>
+                <h3>{{ total_bookings }}</h3>
+                <p>Session Bookings</p>
+            </div>
+            <div class="dash-stat-card rose">
+                <div class="icon">✉️</div>
+                <h3>{{ total_messages }}</h3>
+                <p>Contact Messages</p>
+            </div>
+        </div>
+
+        <div class="quick-actions">
+            <a href="{{ url_for('add_course') }}" class="quick-action-card">
+                <div class="icon">📘</div>
+                <h4>Add Course</h4>
+                <p>Publish a new tutoring course</p>
+            </a>
+            <a href="{{ url_for('add_tutor') }}" class="quick-action-card">
+                <div class="icon">🧑‍💻</div>
+                <h4>Add Tutor</h4>
+                <p>Onboard a new mentor</p>
+            </a>
+            <a href="{{ url_for('add_testimonial') }}" class="quick-action-card">
+                <div class="icon">💬</div>
+                <h4>Add Testimonial</h4>
+                <p>Feature student success stories</p>
+            </a>
+            <a href="{{ url_for('view_bookings') }}" class="quick-action-card">
+                <div class="icon">📆</div>
+                <h4>Manage Bookings</h4>
+                <p>{{ pending_bookings }} pending session(s)</p>
+            </a>
+        </div>
+        <div class="dash-panel">
+            <div class="dash-panel-header">
+                <h2>Manage Courses</h2>
+                <a href="{{ url_for('add_course') }}" class="btn btn-primary btn-small">+ Add Course</a>
+            </div>
+            <table class="dash-table">
+                <thead>
+                    <tr>
+                        <th>Image</th>
+                        <th>Title</th>
+                        <th>Category</th>
+                        <th>Price</th>
+                        <th>Added</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if recent_courses and recent_courses|length > 0 %}
+                        {% for c in recent_courses %}
+                        <tr>
+                            <td>
+                                {% if c.image %}
+                                <img class="thumb" src="{{ url_for('static', filename='images/' ~ c.image) }}" alt="{{ c.title }}">
+                                {% else %}
+                                <div class="thumb"></div>
+                                {% endif %}
+                            </td>
+                            <td>{{ c.title }}</td>
+                            <td>{{ c.category }}</td>
+                            <td>{{ '$%.2f'|format(c.price) if c.price else 'Free' }}</td>
+                            <td>{{ c.created_at.strftime('%b %d, %Y') if c.created_at else '-' }}</td>
+                            <td>
+                                <a href="{{ url_for('edit_course', course_id=c.id) }}" class="icon-btn edit">✎</a>
+                                <a href="{{ url_for('delete_course', course_id=c.id) }}" class="icon-btn danger confirm-delete" data-label="{{ c.title }}">🗑</a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    {% else %}
+                        <tr class="empty-row"><td colspan="6">No courses added yet.</td></tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+    </main>
+</div>
+
+<script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+</body>
+</html>

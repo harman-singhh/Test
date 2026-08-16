@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Add Course | CodeCraft Academy</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+</head>
+<body class="dashboard-body">
+
+<div class="dash-wrapper">
+    <aside class="sidebar" id="sidebar">
+        <a href="{{ url_for('index') }}" class="logo">Code<span>Craft</span></a>
+        <div class="sidebar-section-title">Overview</div>
+        <a href="{{ url_for('dashboard') }}" class="sidebar-link"><span class="icon">📊</span> Dashboard</a>
+        <div class="sidebar-section-title">Courses</div>
+        <a href="{{ url_for('add_course') }}" class="sidebar-link active"><span class="icon">➕</span> Add Course</a>
+        <a href="{{ url_for('courses') }}" class="sidebar-link" target="_blank"><span class="icon">📚</span> View Courses (live)</a>
+        <div class="sidebar-section-title">Tutors</div>
+        <a href="{{ url_for('add_tutor') }}" class="sidebar-link"><span class="icon">➕</span> Add Tutor</a>
+        <a href="{{ url_for('view_tutors') }}" class="sidebar-link"><span class="icon">🧑‍🏫</span> View Tutors</a>
+        <div class="sidebar-section-title">Engagement</div>
+        <a href="{{ url_for('add_testimonial') }}" class="sidebar-link"><span class="icon">➕</span> Add Testimonial</a>
+        <a href="{{ url_for('view_bookings') }}" class="sidebar-link"><span class="icon">🗓️</span> Session Bookings</a>
+        <a href="{{ url_for('view_messages') }}" class="sidebar-link"><span class="icon">✉️</span> Contact Messages</a>
+        <div class="sidebar-logout">
+            <a href="{{ url_for('logout') }}" class="sidebar-link"><span class="icon">🚪</span> Logout</a>
+        </div>
+    </aside>
+
+    <main class="dash-main">
+        <div class="dash-topbar">
+            <div>
+                <h1>Add New Course</h1>
+                <p>Publish a new tutoring course to the public Courses page.</p>
+            </div>
+        </div>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            {% for category, msg in messages %}
+              <div class="alert alert-{{ 'success' if category == 'success' else 'error' }}">{{ msg }}</div>
+            {% endfor %}
+          {% endif %}
+        {% endwith %}
+
+        <div class="dash-panel">
+            <form method="POST" action="{{ url_for('add_course') }}" enctype="multipart/form-data" data-validate="true">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="title">Course Title *</label>
+                        <input type="text" id="title" name="title" placeholder="Python for Beginners" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="category">Category *</label>
+                        <select id="category" name="category" required>
+                            <option value="">-- Select category --</option>
+                            <option value="Web Development">Web Development</option>
+                            <option value="Python">Python</option>
+                            <option value="Data Science">Data Science</option>
+                            <option value="Mobile Development">Mobile Development</option>
+                            <option value="AI & Machine Learning">AI & Machine Learning</option>
+                            <option value="DevOps">DevOps</option>
+                            <option value="Computer Science Basics">Computer Science Basics</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="description">Description *</label>
+                    <textarea id="description" name="description" placeholder="Describe what students will learn..." required></textarea>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="duration">Duration</label>
+                        <input type="text" id="duration" name="duration" placeholder="e.g. 6 weeks">
+                    </div>
+                    <div class="form-group">
+                        <label for="price">Price (USD)</label>
+                        <input type="number" step="0.01" min="0" id="price" name="price" placeholder="99.00">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="syllabus_link">Syllabus Link</label>
+                        <input type="url" id="syllabus_link" name="syllabus_link" placeholder="https://...">
+                    </div>
+                    <div class="form-group">
+                        <label for="demo_link">Live Demo Link</label>
+                        <input type="url" id="demo_link" name="demo_link" placeholder="https://...">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="image">Course Image</label>
+                    <input type="file" id="image" name="image" accept=".png,.jpg,.jpeg" data-preview="imagePreview">
+                    <div class="image-preview" id="imagePreview"></div>
+                </div>
+
+                <button type="submit" class="btn btn-primary">Publish Course</button>
+            </form>
+        </div>
+    </main>
+</div>
+
+<script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+</body>
+</html>
